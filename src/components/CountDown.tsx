@@ -1,46 +1,23 @@
 import { useState, useEffect, useContext } from 'react';
+import { CountdownContext } from '../contexts/CountdownContext';
 import styles from '../styles/components/countdown.module.css';
 
 import { ChallengesContext } from '../contexts/ChallengeContext';
 
-let countdownTimeOut: NodeJS.Timeout;
-
 export function CountDown() {
 
-    const { startNewChallenges } = useContext(ChallengesContext);
-
-    const [time, setTime] = useState(0.1 * 20);
-    const [isActive, setIsactive] = useState(false);
-    const [hasFinish, setHasFinish] = useState(false);
-
-    const minutes = Math.floor(time/60);
-    const seconds = time % 60;
+    const { 
+        minutes, 
+        seconds, 
+        hasFinish, 
+        isActive, 
+        resetCountdown, 
+        startCountdown 
+    } = useContext(CountdownContext);
 
     const [ minuteLeft, minuteRight ] = String(minutes).padStart(2, '0').split('');
     const [ secondLeft, secondRight ] = String(seconds).padStart(2, '0').split('');
-
-    function startCountdown() {
-        setIsactive(true);
-    }
-
-    function resetCountdown() {
-        clearTimeout(countdownTimeOut);
-        setIsactive(false);
-        setTime(0.1 * 60);
-    }
-
-    useEffect(() => {
-        if(isActive && time > 0) {
-            countdownTimeOut = setTimeout(() => {
-                setTime(time - 1)
-            }, 1000)
-        }
-        else if (isActive && time === 0) {
-            setHasFinish(true);
-            setIsactive(false);
-            startNewChallenges();
-        }
-    }, [isActive, time]);
+    
 
     return (
         <div>
